@@ -3,7 +3,7 @@
     modalOpen:false,
     confirmModal:false,
     openModal: $wire.entangle('openModal'),
-    toast:$wire.entangle('toastAlert'),
+    toast:$wire.entangle('toastAlert.show'),
     toastShow: false
     }"
 
@@ -20,7 +20,12 @@
             }
     });
     "
-
+class="flex flex-col w-full items-stretch xs:h-auto md:h-[calc(100%_-_60px)]"
+{{--     style="--}}
+{{--height: -o-calc(100% - 60px); /* opera */--}}
+{{--height: -webkit-calc(100% - 60px); /* google, safari */--}}
+{{--height: -moz-calc(100% - 60px); /* firefox */--}}
+{{--"--}}
 >
 
     {{$slot}}

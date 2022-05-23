@@ -1,11 +1,12 @@
 <?php
 
-namespace App\Http\Livewire\Admin\Users;
+namespace App\Http\Livewire\Admin\Administrators;
 
 use App\Http\Livewire\Authenticate;
 use App\Mail\ResetPassword;
 use App\Mail\Welcome;
-use App\Models\User;
+use App\Models\Admin;
+use App\Models\Administrator;
 use App\Traits\Data;
 use App\Traits\Query;
 use Illuminate\Database\Eloquent\Model;
@@ -32,22 +33,22 @@ class Datatable extends Authenticate
         $rolePermissions,
         $allRolePermissions,
         $permissions,
-        $userID,
-        $user = ['name' => '', 'email' => ''];
+        $adminID,
+        $admin = ['name' => '', 'email' => ''];
 
 
     protected $messages = [
-        'user.name.required' => 'The Name cannot be empty.',
-        'user.name.string' => ':attribute must be a string.',
-        'user.name.min' => 'The Name must have minimum 4 characters.',
-        'user.name.max' => ':attribute cannot exceed more than 255 characters.',
-        'user.email.required' => 'The Email Address cannot be empty.',
-        'user.email.string' => ':attribute Email must be a string.',
-        'user.email.max' => ':attribute cannot exceed more than 255 characters.',
-        'user.email.email' => ':attribute is not a valid email Address.',
-        'user.email.unique' => ':attribute Email Address already exists!.',
-        'user.password.required' => 'The Password cannot be empty.',
-        'user.password.confirmed' => 'The two Password do not match.',
+        'admin.name.required' => 'The Name cannot be empty.',
+        'admin.name.string' => ':attribute must be a string.',
+        'admin.name.min' => 'The Name must have minimum 4 characters.',
+        'admin.name.max' => ':attribute cannot exceed more than 255 characters.',
+        'admin.email.required' => 'The Email Address cannot be empty.',
+        'admin.email.string' => ':attribute Email must be a string.',
+        'admin.email.max' => ':attribute cannot exceed more than 255 characters.',
+        'admin.email.email' => ':attribute is not a valid email Address.',
+        'admin.email.unique' => ':attribute Email Address already exists!.',
+        'admin.password.required' => 'The Password cannot be empty.',
+        'admin.password.confirmed' => 'The two Password do not match.',
     ];
 
     public function addButton()
@@ -55,8 +56,8 @@ class Datatable extends Authenticate
         $this->reset();
         $this->modalType = 'add';
         $this->modalSize = 'medium';
-        $this->header = "Add User";
-        $this->record = new User();
+        $this->header = "Add Administrator";
+        $this->record = new Admin();
 
     }
 
@@ -66,28 +67,28 @@ class Datatable extends Authenticate
         $this->resetErrorBag();
         $this->modalType = 'update';
         $this->modalSize = 'medium';
-        $this->header = "Update User";
-        $this->userID = $id;
-        $this->record = User::where('id', $id)->first();
-        $this->user['id'] = $this->record->id;
-        $this->user['name'] = $this->record->name;
-        $this->user['email'] = $this->record->email;
+        $this->header = "Update Administrator";
+        $this->adminID = $id;
+        $this->record = Admin::where('id', $id)->first();
+        $this->admin['id'] = $this->record->id;
+        $this->admin['name'] = $this->record->name;
+        $this->admin['email'] = $this->record->email;
     }
 
     public function deleteButton($id)
     {
         $this->modalType = 'delete';
-        $this->header = "Delete User";
-        $this->userID = $id;
-        $this->record = User::where('id', $id)->first();
+        $this->header = "Delete Administrator";
+        $this->adminID = $id;
+        $this->record = Admin::where('id', $id)->first();
     }
 
     public function passwordButton($id)
     {
         $this->modalType = 'reset_password';
         $this->header = "Reset password";
-        $this->userID = $id;
-        $this->record = User::where('id', $id)->first();
+        $this->adminID = $id;
+        $this->record = Admin::where('id', $id)->first();
     }
 
 
@@ -98,12 +99,13 @@ class Datatable extends Authenticate
             case 'add':
             case 'update':
                 $this->validate();
-                $this->record->name = Data::capitalize_each_word($this->user['name']);
-                $this->record->email = Data::all_lower_case($this->user['email']);
+                $this->record->name = Data::capitalize_each_word($this->admin['name']);
+                $this->record->email = Data::all_lower_case($this->admin['email']);
                 if($this->modalType =='add'){
                     $password=Data::generate_password();
                     $this->record->password = Hash::make($password);
                     $this->record->save();
+                    $this->record->assignRole('admin');
                     Mail::to($this->record->email)->send(new Welcome($this->record->name, $this->record->email, $password));
                 }else{
                     $this->record->save();
@@ -133,8 +135,8 @@ class Datatable extends Authenticate
 
     public function render()
     {
-        $records = User::paginate(10);
-        return view('livewire.admin.users.datatable', ['records' => $records]);
+        $records = Admin::paginate(10);
+        return view('livewire.admin.administrators.datatable', ['records' => $records]);
 
 
     }
@@ -142,17 +144,17 @@ class Datatable extends Authenticate
     protected function rules()
     {
         return [
-            'user.name' => 'required|min:4',
-            'user.email' => 'required|email|unique:users,email,' . $this->userID,
-//            'user.password' => 'required', 'confirmed',Password::defaults()
+            'admin.name' => 'required|min:4',
+            'admin.email' => 'required|email|unique:admins,email,' . $this->adminID,
+//            'admin.password' => 'required', 'confirmed',Password::defaults()
         ];
     }
 
     protected function validationAttributes()
     {
         return [
-            'user.name' => $this->user['name'],
-            'user.email' => $this->user['email'],
+            'admin.name' => $this->admin['name'],
+            'admin.email' => $this->admin['email'],
         ];
     }
 

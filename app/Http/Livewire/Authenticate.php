@@ -16,15 +16,18 @@ class Authenticate extends Component
 {
 
     public
+        $darkMode = true,
         $email = '',
         $password = '',
         $returnValue,
-        $authError=null,
-        $ipAddress;
+        $authError = null,
+        $ipAddress,
+
+        $toastAlert = ['show' => 'false', 'alert' => '', 'message' => ''];
 
     public bool $openAuthModal = false;
 
-    protected $listeners = ['authorizeLogin','refreshComponent'];
+    protected $listeners = ['authorizeLogin'];
     protected $rules = [
         'email' => 'required|email',
         'password' => 'required',
@@ -36,7 +39,8 @@ class Authenticate extends Component
         'password.required' => 'The Password cannot be empty.',
     ];
 
-    public function hydrate(){
+    public function hydrate()
+    {
 
     }
 
@@ -44,14 +48,15 @@ class Authenticate extends Component
     {
 
         $this->resetErrorBag();
-        $this->authError=null;
+        $this->authError = null;
         $this->reset();
         $this->openAuthModal = $value[0];
         $this->returnValue = $value[1];
     }
 
-    public function refreshComponent(){
-        $this->openAuthModal=true;
+    public function refreshComponent()
+    {
+        $this->openAuthModal = true;
     }
 
 
@@ -71,7 +76,7 @@ class Authenticate extends Component
             $this->emit('authSuccess', $this->returnValue);
             $this->openAuthModal = false;
         } else {
-            $this->authError=true;
+            $this->authError = true;
 //            Session::forget('authorizeOperation');
         }
     }

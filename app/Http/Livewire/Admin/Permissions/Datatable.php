@@ -2,12 +2,13 @@
 
 namespace App\Http\Livewire\Admin\Permissions;
 
+use App\Http\Livewire\Authenticate;
 use App\Traits\Data;
 use Livewire\Component;
 use Livewire\WithPagination;
 use Spatie\Permission\Models\Permission;
 
-class Datatable extends Component
+class Datatable extends Authenticate
 {
     use WithPagination;
     use Data;
@@ -16,9 +17,8 @@ class Datatable extends Component
         $header=null,
         $modalType = null,
         $modalSize = 'medium',
-        $openModal = true,
+        $openModal = false,
         $confirmModalStatus = true,
-        $toastAlert=[],
         $record,
         $rolePermissions,
         $allRolePermissions,
@@ -80,14 +80,14 @@ class Datatable extends Component
                 $this->record->guard_name = $this->permission['guard_name'];
                 $this->record->save();
                 $this->openModal = false;
-                ($this->modalType=='add')? $this->toastAlert=['alert'=>'success','message'=>$this->record->name.' added successfully!'] :  $this->toastAlert=['alert'=>'success','message'=>$this->record->name.' updated successfully!'];
+                ($this->modalType=='add')? $this->toastAlert=['show'=>true,'alert'=>'success','message'=>$this->record->name.' added successfully!'] :  $this->toastAlert=['alert'=>'success','message'=>$this->record->name.' updated successfully!'];
                 break;
 
             case 'delete':
 
                 $this->record->delete();
                 $this->confirmModalStatus = !$this->confirmModalStatus;
-                $this->toastAlert=['alert'=>'danger','message'=>$this->record->name.' deleted successfully!'];
+                $this->toastAlert=['show'=>true,'alert'=>'danger','message'=>$this->record->name.' deleted successfully!'];
                 break;
 
         }

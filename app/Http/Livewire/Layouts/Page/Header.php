@@ -6,7 +6,8 @@ use Livewire\Component;
 
 class Header extends Component
 {
-
+    public $darkMode = false;
+    protected $listeners = ['refreshComponent' => '$refresh'];
 
     public function render()
     {

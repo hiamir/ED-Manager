@@ -24,7 +24,7 @@ Route::group([
 
     ], function () {
         Route::get('dashboard', AdminDashboard::class)->name('dashboard');
-        Route::get('administrators', Administrators::class)->name('admins');
+        Route::get('administrators', \App\Http\Livewire\Admin\Administrators\Controller::class)->name('admins');
         Route::get('users', \App\Http\Livewire\Admin\Users\Controller::class)->name('users');
         Route::get('profile', \App\Http\Livewire\Admin\Profile\Controller::class)->name('profile');
         Route::get('roles', \App\Http\Livewire\Admin\Role\Controller::class)->name('roles');

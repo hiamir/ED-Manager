@@ -15,9 +15,11 @@
                 this.tab=value;
             });
         "
+
+        class="flex flex-col h-full w-full items-stretch"
     >
 
-    <div class="border-b border-gray-200 dark:border-gray-700">
+    <div class="flex  w-full border-b border-gray-200 dark:border-gray-700">
         <ul class="flex flex-wrap -mb-px text-sm font-medium text-center text-gray-500 dark:text-gray-400">
             <li wire:click.prevent="openTab(1)" class="mr-2 cursor-pointer">
                 <a
@@ -52,18 +54,55 @@
 
         </ul>
     </div>
-    <div class="tab-content" id="tabs-tabContent">
-        <div x-show="tab===1" class="tab-pane fade show mb-5" id="tabs-home" role="tabpanel"
+
+    <div class="tab-content flex h-full pt-8 pb-4" id="tabs-tabContent">
+        <div x-show="tab===1" class="flex flex-wrap py-4 xs:w-full h-full tab-pane fade show  items-center justify-center" id="tabs-home" role="tabpanel"
              aria-labelledby="tabs-home-tab">
-            Tab 1 content
+
+
+            <div
+                class="flex flex-col p-4 xs:w-full w-md-[50%] max-w-md bg-white rounded-lg border border-gray-200 shadow-md sm:p-6 lg:p-8 dark:bg-gray-800 dark:border-gray-700">
+                <div class="flex justify-center">
+                    <img src="{{asset('storage/images/profile.svg')}}" class="mb-5 h-[200px] self-center" alt="">
+                </div>
+
+
+                <x-form wire:submit.prevent="submit" class="space-y-6" novalidate autocomplete="on">
+                    <div class="mt-0">
+                        <x-label for="name" :value="__('Full name')"/>
+                        <div class="relative">
+                            <x-input name="name" type="name" placeholder="Enter your Full name" autocomplete="on"
+                                     wire:model.defer="user.name"></x-input>
+                        </div>
+                        <x-forms.form-error field="user.name"></x-forms.form-error>
+                    </div>
+
+                    <div class="mt-4">
+                        <x-label for="email" :value="__('Current password')"/>
+                        <div class="relative">
+                            <x-forms.input-disabled name="email" type="name" placeholder="Enter your email ID" autocomplete="on"
+                                     wire:model.defer="user.email" ></x-forms.input-disabled>
+                        </div>
+                        <x-forms.form-error field="user.email"></x-forms.form-error>
+                    </div>
+
+
+                    <x-forms.submit name="update" class="mt-6" type="update">Update Profile</x-forms.submit>
+
+                </x-form>
+
+            </div>
+
+
+
         </div>
-        <div x-show="tab===2" class="flex items-left  tab-pane fade mt-8" id="tabs-profile"
+        <div x-show="tab===2" class="flex flex-wrap py-4 xs:w-full h-full tab-pane fade show  items-center justify-center" id="tabs-profile"
              role="tabpanel" aria-labelledby="tabs-profile-tab">
 
             <div
                 class="p-4 xs:w-full w-md-[50%] max-w-md bg-white rounded-lg border border-gray-200 shadow-md sm:p-6 lg:p-8 dark:bg-gray-800 dark:border-gray-700">
                 <div class="flex justify-center">
-                <img src="{{asset('storage/images/password.svg')}}" class="mb-5 w-2/3 self-center" alt="">
+                <img src="{{asset('storage/images/password.svg')}}" class="mb-5 h-[200px] self-center" alt="">
                 </div>
 
 

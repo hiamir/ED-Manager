@@ -6,14 +6,15 @@
     }"
 
     x-init="
+    openAuthModal=false;
             modalAuthOpen=openAuthModal;
             console.log(modalAuthOpen);
             $watch('openAuthModal',function(value){
             this.modalAuthOpen=value
             console.log(this.modalAuthOpen);
     });
-"
 
+"
     class="flex h-screen overflow-y-hidden bg-white dark:bg-gray-800"
 >
 
@@ -24,6 +25,9 @@
         {{$slot}}
 
     </div>
+
+
+
     <x-datatable.modal.authModal header="Authorization" modalSize="small">
 
         <div

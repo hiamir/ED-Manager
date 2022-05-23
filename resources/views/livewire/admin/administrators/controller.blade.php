@@ -3,9 +3,9 @@
     <livewire:layouts.page.sidebar/>
     <div class="flex flex-col flex-1 h-full overflow-hidden">
         <livewire:layouts.page.header/>
-        <x-layout.page.content header="Roles">
+        <x-layout.page.content header="Administrators">
             {{--------------------CONTENT STARTS HERE--------------------}}
-            <livewire:admin.role.datatable/>
+            <livewire:admin.administrators.datatable/>
             {{--------------------CONTENT ENDS HERE--------------------}}
         </x-layout.page.content>
         <livewire:layouts.page.footer/>

@@ -22,10 +22,11 @@ class Datatable extends Authenticate
         $password_regex = '/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{6,}$/';
     public
         $auth = ['current_password' => '', 'password' => '', 'password_confirmation' => ''],
+        $user=['name'=>'','email'=>''],
         $header = null,
-        $toastAlert = ['alert' => '', 'message' => ''],
         $email,
         $password,
+        $form,
         $modalType = null,
         $modalSize = 'medium',
         $openModal = false,
@@ -38,13 +39,22 @@ class Datatable extends Authenticate
 
     protected $listeners = ['authSuccess'];
 
+    protected function resetPasswordForm(){
+        $this->auth['current_password']=null;
+        $this->auth['password']=null;
+        $this->auth['password_confirmation']=null;
+    }
+
     public function mount(Request $request)
     {
+        $this->resetPasswordForm();
         if (in_array($this->tabContent, $this->tabContentGuard)) {
             $this->tabContent = 0;
         } else {
             $this->tabPrevious = $this->tabContent;
         }
+        $this->user['name']=Auth::user()->name;
+        $this->user['email']=Auth::user()->email;
         $this->modalSize = "small";
     }
 
@@ -56,6 +66,8 @@ class Datatable extends Authenticate
     }
 
     protected $messages = [
+        'user.name.required'=>'Please give your full name',
+        'user.name.min'=>'Your name must be at-least 4 characters long',
 
         'auth.current_password.required' => 'The Password cannot be empty.',
         'auth.password.required' => 'New Password cannot be empty.',
@@ -67,7 +79,7 @@ class Datatable extends Authenticate
 
     ];
 
-    protected function rules()
+    protected function passwordRules()
     {
         return [
             'auth.current_password' => 'required|current_password',
@@ -76,6 +88,12 @@ class Datatable extends Authenticate
         ];
     }
 
+    protected function profileRules()
+    {
+        return [
+            'user.name' => 'required|min:4',
+        ];
+    }
 
     public function openTab($id)
     {
@@ -103,16 +121,30 @@ class Datatable extends Authenticate
 
     public function submit()
     {
+        switch($this->tabContent){
+            case 1:
+                $this->validate($this->profileRules());
+                $admin=Admin::find(Auth::user()->id);
+                $admin->name=Data::capitalize_each_word($this->user['name']);
+                $admin->save();
+                $this->emit('refreshComponent');
+                $this->toastAlert = ['show'=>'true','alert' => 'success', 'message' => ' Your profile was updated successfully!'];
+                break;
 
-        $this->validate();
-        if (Auth::guard('admin')->check()) {
-            $user = Admin::find(Auth::user()->id);
-            $user->password = Hash::make($this->auth['password']);
-            $user->save();
-            $this->resetErrorBag();
-            $this->reset();
-            $this->toastAlert = ['alert' => 'success', 'message' => ' Password was updated successfully!'];
+            case 2:
+                $this->validate($this->passwordRules());
+                if (Auth::guard('admin')->check()) {
+                    $user = Admin::find(Auth::user()->id);
+                    $user->password = Hash::make($this->auth['password']);
+                    $user->save();
+                    $this->resetPasswordForm();
+//                    $this->resetErrorBag();
+//                    $this->reset();
+                    $this->toastAlert = ['show'=>'true','alert' => 'success', 'message' => ' Password was updated successfully!'];
+                }
+                break;
         }
+
     }
 
 

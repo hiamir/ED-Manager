@@ -12,7 +12,6 @@ use Illuminate\Support\Facades\Route;
 
 Route::group([
     'namespace'=>'\App\Http\Livewire\Auth\Admin',
-
     'as'=>'admin.'
 ], function () {
     Route::group([
